@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - Learner Portal' : 'Learner Portal'}">Learner Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Navbar Styling */
+        .navbar-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .logo-container:hover::before {
+            left: 100%;
+        }
+        
+        .nav-pill-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid rgba(203, 213, 225, 0.5);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-link:not(.active) {
+            background: transparent;
+        }
+        
+        .nav-link:not(.active):hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-link:hover::before {
+            left: 100%;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: subtle-pulse 3s ease-in-out infinite;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .notification-btn {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .notification-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            transform: translateY(-1px);
+        }
+        
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .course-card {
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+        }
+        .page-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .nav-pill-container {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    
+    <!-- Modern Navigation Fragment -->
+    <nav th:fragment="navbar" class="navbar-glass sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- Logo - Left -->
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105">
+                            <i class="fas fa-graduation-cap text-white text-xl relative z-10"></i>
+                        </div>
+                        <div class="hidden sm:block">
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                Learner Portal
+                            </h1>
+                            <p class="text-xs text-gray-500 font-medium">Advanced Learning Platform</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links - Center -->
+                <div class="hidden md:flex items-center justify-center flex-1">
+                    <div class="nav-pill-container flex items-center space-x-2 rounded-2xl p-2">
+                        <a href="/dashboard" 
+                           th:class="${activePage == 'dashboard' ? 'nav-link active px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300' : 'nav-link px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 transition-all duration-300'}">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                        <a href="/courses" 
+                           th:class="${activePage == 'courses' ? 'nav-link active px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300' : 'nav-link px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 transition-all duration-300'}">
+                            <i class="fas fa-book mr-2"></i>Courses
+                        </a>
+                        <a href="/my-courses" 
+                           th:class="${activePage == 'my-courses' ? 'nav-link active px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300' : 'nav-link px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 transition-all duration-300'}">
+                            <i class="fas fa-user-graduate mr-2"></i>My Courses
+                        </a>
+                        <a href="/certifications" 
+                           th:class="${activePage == 'certifications' ? 'nav-link active px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300' : 'nav-link px-6 py-3 rounded-xl text-sm font-semibold text-gray-600 transition-all duration-300'}">
+                            <i class="fas fa-certificate mr-2"></i>Certificates
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- User Section - Right -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button class="notification-btn p-3 rounded-xl text-gray-400 hover:text-blue-600 transition-all duration-300">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="notification-badge absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                        </button>
+                    </div>
+                    
+                    <!-- User Info -->
+                    <div class="flex items-center space-x-3 pl-4 border-l border-gray-200">
+                        <a href="/profile" class="flex items-center space-x-3 hover:bg-gray-50 rounded-xl p-2 transition-all duration-300">
+                            <div class="user-avatar w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg cursor-pointer">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <div class="hidden sm:block">
+                                <p class="text-sm font-bold text-gray-800" th:text="${userName != null ? userName.split(' ')[0] : 'User'}">User</p>
+                                <p class="text-xs text-gray-500 font-medium">Student</p>
+                            </div>
+                            <div>
+                                <i class="fas fa-chevron-right text-xs text-gray-400"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Logout -->
+                    <a href="/logout" 
+                       class="logout-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-red-600 transition-all duration-300">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden mobile-menu">
+                    <button class="p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main th:fragment="content" class="page-fade-in">
+        <!-- Content will be inserted here -->
+    </main>
+
+</body>
+</html>

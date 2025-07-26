@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">My Courses - Learner Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Navbar Styling */
+        .navbar-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .logo-container:hover::before {
+            left: 100%;
+        }
+        
+        .nav-pill-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid rgba(203, 213, 225, 0.5);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-link:not(.active) {
+            background: transparent;
+        }
+        
+        .nav-link:not(.active):hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-link:hover::before {
+            left: 100%;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: subtle-pulse 3s ease-in-out infinite;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .notification-btn {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .notification-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            transform: translateY(-1px);
+        }
+        
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .course-card {
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+        }
+        .page-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .nav-pill-container {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    
+    <!-- Include Modern Navigation -->
+    <div th:replace="~{layout/layout :: navbar}"></div>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto p-6 page-fade-in">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-user-graduate text-blue-600 mr-3"></i>
+                My Courses
+            </h1>
+            <p class="text-gray-600">Track your learning progress and continue your journey</p>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-blue-500">
+                <div class="text-2xl font-bold text-gray-800" th:text="${courseStats.total}">0</div>
+                <div class="text-sm text-gray-600">Total Enrolled</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-indigo-400">
+                <div class="text-2xl font-bold text-gray-800" th:text="${courseStats.assigned}">0</div>
+                <div class="text-sm text-gray-600">Assigned</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-yellow-400">
+                <div class="text-2xl font-bold text-gray-800" th:text="${courseStats.inProgress}">0</div>
+                <div class="text-sm text-gray-600">In Progress</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-green-400">
+                <div class="text-2xl font-bold text-gray-800" th:text="${courseStats.completed}">0</div>
+                <div class="text-sm text-gray-600">Completed</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-red-400">
+                <div class="text-2xl font-bold text-gray-800" th:text="${courseStats.overdue}">0</div>
+                <div class="text-sm text-gray-600">Overdue</div>
+            </div>
+        </div>
+        
+        <!-- Filter Options -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex flex-wrap items-center gap-4">
+                <span class="text-sm font-medium text-gray-700">Filter by status:</span>
+                <a href="/my-courses" 
+                   th:class="${selectedStatus == null} ? 'bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-full text-sm font-medium transition duration-300'">
+                    All
+                </a>
+                <a href="/my-courses?status=assigned" 
+                   th:class="${selectedStatus == 'assigned'} ? 'bg-indigo-500 text-white px-4 py-2 rounded-full text-sm font-medium' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-full text-sm font-medium transition duration-300'">
+                    Assigned
+                </a>
+                <a href="/my-courses?status=in_progress" 
+                   th:class="${selectedStatus == 'in_progress'} ? 'bg-yellow-500 text-white px-4 py-2 rounded-full text-sm font-medium' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-full text-sm font-medium transition duration-300'">
+                    In Progress
+                </a>
+                <a href="/my-courses?status=completed" 
+                   th:class="${selectedStatus == 'completed'} ? 'bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-full text-sm font-medium transition duration-300'">
+                    Completed
+                </a>
+                <a href="/my-courses?status=overdue" 
+                   th:class="${selectedStatus == 'overdue'} ? 'bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 px-4 py-2 rounded-full text-sm font-medium transition duration-300'">
+                    Overdue
+                </a>
+            </div>
+        </div>
+        
+        <!-- Courses List -->
+        <div class="space-y-6">
+            <div th:if="${#lists.isEmpty(enrollments)}" class="bg-white rounded-lg shadow-md p-12 text-center">
+                <i class="fas fa-book-open text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">No courses found</h3>
+                <p class="text-gray-600 mb-6">
+                    <span th:if="${selectedStatus != null}">No courses with the selected status.</span>
+                    <span th:if="${selectedStatus == null}">You haven't enrolled in any courses yet.</span>
+                </p>
+                <a href="/courses" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 inline-flex items-center">
+                    <i class="fas fa-search mr-2"></i>
+                    Browse All Courses
+                </a>
+            </div>
+            
+            <div th:each="enrollment : ${enrollments}" class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <div class="flex items-start justify-between">
+                        <!-- Course Info -->
+                        <div class="flex-1">
+                            <div class="flex items-center mb-3">
+                                <h3 class="text-xl font-semibold text-gray-800 mr-3" th:text="${enrollment.course.title}">Course Title</h3>
+                                <!-- Status Badge -->
+                                <span th:class="${enrollment.status.name() == 'assigned'} ? 'bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium' :
+                                               (${enrollment.status.name() == 'in_progress'} ? 'bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium' :
+                                               (${enrollment.status.name() == 'completed'} ? 'bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium' :
+                                               'bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium'))"
+                                      th:text="${enrollment.status.name().replace('_', ' ')}">
+                                    Status
+                                </span>
+                            </div>
+                            
+                            <p class="text-gray-600 mb-4" th:text="${enrollment.course.description}">Course description...</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-calendar mr-2 text-blue-600"></i>
+                                    <span>Enrolled: </span>
+                                    <span th:text="${#temporals.format(enrollment.enrollmentDate, 'MMM dd, yyyy')}">Date</span>
+                                </div>
+                                <div class="flex items-center text-sm text-gray-600" th:if="${enrollment.course.category}">
+                                    <i class="fas fa-folder mr-2 text-blue-600"></i>
+                                    <span th:text="${enrollment.course.category}">Category</span>
+                                </div>
+                                <div class="flex items-center text-sm text-gray-600" th:if="${enrollment.course.level}">
+                                    <i class="fas fa-signal mr-2 text-blue-600"></i>
+                                    <span th:text="${enrollment.course.level}">Level</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="mb-4" th:if="${enrollment.completionPercentage != null}">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium text-gray-600">Progress</span>
+                                    <span class="text-sm font-semibold text-gray-800" th:text="${enrollment.progressPercentage}">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                                         th:style="'width: ' + ${enrollment.completionPercentage} + '%'"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Score Display -->
+                            <div th:if="${enrollment.score != null}" class="mb-4">
+                                <div class="flex items-center text-sm">
+                                    <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                    <span class="text-gray-600">Score: </span>
+                                    <span class="font-semibold text-gray-800 ml-1" th:text="${enrollment.scoreDisplay}">Score</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="ml-6 flex flex-col space-y-2">
+                            <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300 text-center text-sm">
+                                <i class="fas fa-play mr-1"></i>
+                                Continue
+                            </a>
+                            <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition duration-300 text-sm">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Details
+                            </button>
+                            <a th:if="${enrollment.hasCertification()}" 
+                               href="#" 
+                               class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300 text-center text-sm">
+                                <i class="fas fa-certificate mr-1"></i>
+                                Certificate
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Dashboard -->
+        <div class="mt-8 text-center">
+            <a href="/dashboard" class="inline-flex items-center text-blue-600 hover:text-blue-700 transition duration-300">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+</body>
+</html>

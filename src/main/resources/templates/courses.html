@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Courses - Learner Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Navbar Styling */
+        .navbar-glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .logo-container:hover::before {
+            left: 100%;
+        }
+        
+        .nav-pill-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid rgba(203, 213, 225, 0.5);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-link:not(.active) {
+            background: transparent;
+        }
+        
+        .nav-link:not(.active):hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            color: #3b82f6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-link:hover::before {
+            left: 100%;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: subtle-pulse 3s ease-in-out infinite;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .notification-btn {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .notification-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            transform: translateY(-1px);
+        }
+        
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .course-card {
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+        }
+        .page-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .nav-pill-container {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    
+    <!-- Include Modern Navigation -->
+    <div th:replace="~{layout/layout :: navbar}"></div>
+
+    <!-- Flash Messages -->
+    <div class="max-w-7xl mx-auto px-6 pt-4" style="margin-left: 225px;">
+        <!-- Success Message -->
+        <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 relative" role="alert">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}">Success message</span>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 relative" role="alert">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}">Error message</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto p-6 page-fade-in" style="margin-left: 225px;">
+        
+        <!-- Header and Filter Section -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Page Title -->
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Available Courses</h1>
+                    <p class="text-gray-600">Choose from our comprehensive course catalog</p>
+                </div>
+                
+                <!-- Category Filter Dropdown -->
+                <div class="flex items-center space-x-4">
+                    <label for="categoryFilter" class="text-sm font-medium text-gray-700">Filter by Category:</label>
+                    <div class="flex items-center space-x-2">
+                        <div class="relative">
+                            <select id="categoryFilter" 
+                                    onchange="filterByCategory(this.value)"
+                                    class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 cursor-pointer">
+                                <option value="all" th:selected="${selectedCategory == 'all'}">All Categories</option>
+                                <option th:each="category : ${availableCategories}" 
+                                        th:value="${category}" 
+                                        th:text="${category}"
+                                        th:selected="${selectedCategory == category}">
+                                    Category Name
+                                </option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Filter Button (only show when filter is active) -->
+                        <button th:if="${selectedCategory != 'all'}" 
+                                onclick="filterByCategory('all')"
+                                class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                                title="Clear filter">
+                            <i class="fas fa-times text-sm"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Course Count Badge -->
+                    <div class="hidden md:flex items-center space-x-2">
+                        <span class="text-sm text-gray-500">Found:</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                              th:classappend="${selectedCategory == 'all'} ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                            <span th:text="${#lists.size(courses)}">0</span> courses
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function filterByCategory(category) {
+                const currentUrl = new URL(window.location);
+                if (category === 'all') {
+                    currentUrl.searchParams.delete('category');
+                } else {
+                    currentUrl.searchParams.set('category', category);
+                }
+                window.location.href = currentUrl.toString();
+            }
+        </script>
+
+        <!-- Courses Grid using Flexbox -->
+        <div class="flex flex-wrap gap-6">
+            
+            <!-- Course Card -->
+            <div th:each="course : ${courses}" 
+                 class="course-card flex-none w-80 bg-white rounded-xl shadow-lg hover:shadow-2xl border border-gray-100">
+                
+                <!-- Course Header -->
+                <div class="h-32 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-t-xl flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black opacity-10"></div>
+                    <i class="fas fa-graduation-cap text-white text-3xl relative z-10"></i>
+                </div>
+                
+                <!-- Course Content -->
+                <div class="p-6">
+                    
+                    <!-- Title -->
+                    <h3 class="text-xl font-bold text-gray-800 mb-3" th:text="${course.title}">Course Title</h3>
+                    
+                    <!-- Description -->
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3" th:text="${course.description}">Course description...</p>
+                    
+                    <!-- Course Details -->
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-500" th:if="${course.category}">
+                            <i class="fas fa-tag mr-2"></i>
+                            <span th:text="${course.category}">Category</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500" th:if="${course.level}">
+                            <i class="fas fa-signal mr-2"></i>
+                            <span th:text="${course.level}">Level</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500" th:if="${course.instructorName}">
+                            <i class="fas fa-user-tie mr-2"></i>
+                            <span th:text="${course.instructorName}">Instructor</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500" th:if="${course.startDate}">
+                            <i class="fas fa-calendar mr-2"></i>
+                            <span th:text="${course.startDate}">Start Date</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Status Badge and Action Button -->
+                    <div class="mb-4">
+                        <!-- Status Badge - Always show since all courses have valid status -->
+                        <div class="mb-3">
+                            <span th:if="${course.status.name() == 'active'}" 
+                                  class="inline-block px-3 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+                                <i class="fas fa-play-circle mr-1"></i>Active
+                            </span>
+                            <span th:if="${course.status.name() == 'upcoming'}" 
+                                  class="inline-block px-3 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full">
+                                <i class="fas fa-clock mr-1"></i>Upcoming
+                            </span>
+                            <span th:if="${course.status.name() == 'archived'}" 
+                                  class="inline-block px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-800 rounded-full">
+                                <i class="fas fa-archive mr-1"></i>Archived
+                            </span>
+                        </div>
+                        
+                        <!-- Action Button based on status and enrollment -->
+                        <div th:switch="${course.status.name()}">
+                            
+                            <!-- ACTIVE COURSES -->
+                            <div th:case="'active'">
+                                <!-- Check if user is already enrolled -->
+                                <div th:if="${#lists.contains(enrolledCourseIds, course.courseId)}">
+                                    <button disabled
+                                            class="w-full bg-green-500 text-white py-2 px-4 rounded-lg cursor-not-allowed">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        Enrolled
+                                    </button>
+                                </div>
+                                <!-- User not enrolled - show enroll button -->
+                                <div th:unless="${#lists.contains(enrolledCourseIds, course.courseId)}">
+                                    <form th:action="@{/courses/{courseId}/enroll(courseId=${course.courseId})}" method="post">
+                                        <button type="submit"
+                                                class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+                                            <i class="fas fa-plus mr-2"></i>
+                                            Enroll Now
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- UPCOMING COURSES -->
+                            <div th:case="'upcoming'">
+                                <button disabled
+                                        class="w-full bg-yellow-300 text-yellow-800 py-2 px-4 rounded-lg cursor-not-allowed">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    Coming Soon
+                                </button>
+                            </div>
+                            
+                            <!-- ARCHIVED COURSES -->
+                            <div th:case="'archived'">
+                                <button disabled
+                                        class="w-full bg-gray-300 text-gray-600 py-2 px-4 rounded-lg cursor-not-allowed">
+                                    <i class="fas fa-archive mr-2"></i>
+                                    Course Ended
+                                </button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(courses)}" class="text-center py-16">
+            <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-500 mb-2">
+                <span th:if="${selectedCategory == 'all'}">No Courses Available</span>
+                <span th:unless="${selectedCategory == 'all'}">No Courses Found</span>
+            </h3>
+            <p class="text-gray-400 mb-4">
+                <span th:if="${selectedCategory == 'all'}">Check back later for new courses!</span>
+                <span th:unless="${selectedCategory == 'all'}">
+                    No courses found in "<span th:text="${selectedCategory}">Category</span>" category.
+                </span>
+            </p>
+            <div th:unless="${selectedCategory == 'all'}">
+                <button onclick="filterByCategory('all')" 
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition duration-200">
+                    <i class="fas fa-list mr-2"></i>
+                    View All Courses
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
