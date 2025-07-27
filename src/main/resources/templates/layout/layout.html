@@ -8,6 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Modern Navbar Styling */
+        /* Minimal enforced navbar icon color for nav only */
+        .navbar-glass .nav-link .fa,
+        .navbar-glass .nav-link .fas {
+            color: #3b82f6 !important;
+            transition: color 0.2s cubic-bezier(0.4,0,0.2,1), transform 0.2s cubic-bezier(0.4,0,0.2,1) !important;
+        }
+        .navbar-glass .nav-link.active .fa,
+        .navbar-glass .nav-link.active .fas {
+            color: #fff !important;
+        }
+        .navbar-glass .nav-link:hover .fa,
+        .navbar-glass .nav-link:hover .fas {
+            color: #6366f1 !important;
+            transform: scale(1.15) !important;
+        }
         .navbar-glass {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -16,27 +31,7 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
-        .logo-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .logo-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .logo-container:hover::before {
-            left: 100%;
-        }
+        .logo-container {background: none !important; box-shadow: none !important; position: static; overflow: visible;}
         
         .nav-pill-container {
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -174,14 +169,11 @@
                 <!-- Logo - Left -->
                 <div class="flex items-center">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105">
-                            <i class="fas fa-graduation-cap text-white text-xl relative z-10"></i>
+                        <div class="logo-container flex items-center justify-center">
+                            <img src="/images/icon.png" alt="skillsync icon" style="width:40px;height:40px;object-fit:contain;display:block;" />
                         </div>
                         <div class="hidden sm:block">
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                Learner Portal
-                            </h1>
-                            <p class="text-xs text-gray-500 font-medium">Advanced Learning Platform</p>
+                            <span class="text-3xl font-extrabold text-[#2196f3] tracking-tight align-middle" style="font-family: 'Inter', sans-serif;">skillsync</span>
                         </div>
                     </div>
                 </div>

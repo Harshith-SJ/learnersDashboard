@@ -24,6 +24,7 @@ public class CourseService {
         return courseRepository.findAll()
             .stream()
             .map(Course::getCategory)
+            .filter(cat -> cat != null && !cat.trim().isEmpty())
             .distinct()
             .toList();
     }

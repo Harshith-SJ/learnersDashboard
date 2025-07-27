@@ -87,16 +87,11 @@ public class DashboardController {
         
         Integer userId = (Integer) session.getAttribute("userId");
         String userName = (String) session.getAttribute("userName");
-        
         if (userId == null || userName == null) {
             return "redirect:/login";
         }
-        
         log.info("Loading my courses for user: {} with status filter: {}", userName, status);
-        
         try {
-            // Get enrollments with optional status filter
-            // Get enrollments with optional status filter
             List<Enrollment> enrollments = studentService.getUserEnrollments(userId);
             // Ensure completionPercentage is never null
             for (Enrollment enrollment : enrollments) {
@@ -104,35 +99,30 @@ public class DashboardController {
                     enrollment.setCompletionPercentage(java.math.BigDecimal.ZERO);
                 }
             }
+            Enrollment.EnrollmentStatus statusFilter = null;
+            if (status != null && !status.isEmpty()) {
                 try {
                     statusFilter = Enrollment.EnrollmentStatus.valueOf(status);
                 } catch (IllegalArgumentException e) {
                     log.warn("Invalid status filter: {}", status);
                 }
             }
-            
-            List<Enrollment> enrollments = studentService.getUserEnrollments(userId);
-            
             // Filter by status if provided
             if (statusFilter != null) {
-                final Enrollment.EnrollmentStatus finalStatusFilter = statusFilter;
+                Enrollment.EnrollmentStatus finalStatusFilter = statusFilter;
                 enrollments = enrollments.stream()
-                    .filter(enrollment -> enrollment.getStatus() == finalStatusFilter)
-                    .toList();
+                        .filter(enrollment -> enrollment.getStatus() == finalStatusFilter)
+                        .toList();
             }
-            
             // Get course statistics
             Map<String, Long> courseStats = dashboardService.getCourseStatistics(userId);
-            
             model.addAttribute("pageTitle", "My Courses - Learner Portal");
             model.addAttribute("userName", userName);
             model.addAttribute("enrollments", enrollments);
             model.addAttribute("selectedStatus", status);
             model.addAttribute("courseStats", courseStats);
             model.addAttribute("activePage", "my-courses"); // For navbar active state
-            
             return "my-courses";
-            
         } catch (Exception e) {
             log.error("Error loading my courses for user: {}", userId, e);
             model.addAttribute("error", "Error loading your courses");

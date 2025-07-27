@@ -208,7 +208,6 @@
         
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            
             <!-- Total Courses -->
             <div class="stats-card bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500 cursor-pointer">
                 <div class="flex items-center">
@@ -223,7 +222,6 @@
                     </div>
                 </div>
             </div>
-            
             <!-- Enrolled Courses -->
             <div class="stats-card bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500 cursor-pointer">
                 <div class="flex items-center">
@@ -233,7 +231,7 @@
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">My Enrollments</p>
+                        <p class="text-sm font-medium text-gray-600">Enrolled</p>
                         <p class="text-2xl font-bold text-gray-800" th:text="${stats.enrolledCourses}">0</p>
                     </div>
                 </div>
@@ -331,26 +329,6 @@
             
             <!-- Right Section: Quick Actions & Recent Enrollments -->
             <div class="lg:col-span-2 space-y-8">
-                
-                <!-- Quick Actions -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <a href="/courses" class="action-card flex items-center justify-center bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 cursor-pointer">
-                            <i class="fas fa-search mr-2"></i>
-                            Browse Courses
-                        </a>
-                        <a href="/my-courses" class="action-card flex items-center justify-center bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-200 cursor-pointer">
-                            <i class="fas fa-book-open mr-2"></i>
-                            My Courses
-                        </a>
-                        <a href="/certifications" class="action-card flex items-center justify-center bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 cursor-pointer">
-                            <i class="fas fa-certificate mr-2"></i>
-                            Certificates
-                        </a>
-                    </div>
-                </div>
-                
                 <!-- Recent Enrollments -->
                 <div class="bg-white rounded-xl shadow-lg p-6">
                     <div class="flex items-center justify-between mb-6">
