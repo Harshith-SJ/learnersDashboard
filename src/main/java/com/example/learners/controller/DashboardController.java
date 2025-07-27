@@ -96,8 +96,14 @@ public class DashboardController {
         
         try {
             // Get enrollments with optional status filter
-            Enrollment.EnrollmentStatus statusFilter = null;
-            if (status != null && !status.trim().isEmpty()) {
+            // Get enrollments with optional status filter
+            List<Enrollment> enrollments = studentService.getUserEnrollments(userId);
+            // Ensure completionPercentage is never null
+            for (Enrollment enrollment : enrollments) {
+                if (enrollment.getCompletionPercentage() == null) {
+                    enrollment.setCompletionPercentage(java.math.BigDecimal.ZERO);
+                }
+            }
                 try {
                     statusFilter = Enrollment.EnrollmentStatus.valueOf(status);
                 } catch (IllegalArgumentException e) {

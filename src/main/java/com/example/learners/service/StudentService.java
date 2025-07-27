@@ -20,6 +20,31 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 public class StudentService {
+    /**
+     * Internal method to create an enrollment
+     */
+    private Enrollment createEnrollment(Integer userId, Integer courseId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+        if (course.isEmpty()) {
+            throw new RuntimeException("Course not found with ID: " + courseId);
+        }
+        // Check if already enrolled
+        Optional<Enrollment> existingEnrollment = enrollmentRepository
+            .findByStudentUserIdAndCourseId(userId, courseId);
+        if (existingEnrollment.isPresent()) {
+            throw new RuntimeException("User is already enrolled in this course");
+        }
+        Enrollment enrollment = new Enrollment();
+        enrollment.setStudent(user.get());
+        enrollment.setCourse(course.get());
+        enrollment.setEnrollmentDate(LocalDate.now());
+        enrollment.setStatus(Enrollment.EnrollmentStatus.assigned);
+        return enrollmentRepository.save(enrollment);
+    }
 
     @Autowired
     private UserRepository userRepository;
@@ -82,51 +107,14 @@ public class StudentService {
     /**
      * Create an enrollment (internal method)
      */
-    public Enrollment createEnrollment(Integer userId, Integer courseId) {
-        log.info("Creating enrollment for user {} in course {}", userId, courseId);
-        
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Course> course = courseRepository.findById(courseId);
-        
-        if (user.isEmpty()) {
-            throw new RuntimeException("User not found with ID: " + userId);
-        }
-        
-        if (course.isEmpty()) {
-            throw new RuntimeException("Course not found with ID: " + courseId);
-        }
-        
-        // Check if already enrolled
-        Optional<Enrollment> existingEnrollment = enrollmentRepository
-            .findByStudentUserIdAndCourseId(userId, courseId);
-        
-        if (existingEnrollment.isPresent()) {
-            throw new RuntimeException("User is already enrolled in this course");
-        }
-        
-        Enrollment enrollment = new Enrollment();
-        enrollment.setStudent(user.get());
-        enrollment.setCourse(course.get());
-        enrollment.setEnrollmentDate(LocalDate.now());
-        enrollment.setStatus(Enrollment.EnrollmentStatus.assigned);
-        
-        log.info("Saving enrollment for user {} in course {}", userId, courseId);
-        return enrollmentRepository.save(enrollment);
-    }
 
     /**
      * Get course by ID
      */
-    public Optional<Course> getCourseById(Integer courseId) {
-        return courseRepository.findById(courseId);
-    }
 
     /**
      * Check if user exists by email
      */
-    public boolean userExistsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
     
     /**
      * Check if user is enrolled in a course
